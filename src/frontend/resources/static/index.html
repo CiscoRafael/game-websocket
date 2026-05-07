@@ -99,68 +99,71 @@
 
         function selectClass(className) {
             selectedClass = className;
-            document.querySelectorAll('.class-card').forEach(card => card.classList.remove('selected'));
-            document.getElementById(`card-${className}`).classList.add('selected');
+
+            document.querySelectorAll('.class-card')
+                .forEach(card => card.classList.remove('selected'));
+
+            document.getElementById(`card-${className}`)
+                .classList.add('selected');
         }
 
         function switchScreen(screenId) {
             document.getElementById('screen-setup').classList.add('hidden');
             document.getElementById('screen-waiting').classList.add('hidden');
             document.getElementById('screen-combat').classList.add('hidden');
+
             document.getElementById(screenId).classList.remove('hidden');
         }
 
         function entrarNaArena() {
             const nome = document.getElementById('player-name').value;
+
             if (!nome || !selectedClass) {
                 alert("Identifique-se e escolha uma classe!");
                 return;
             }
 
-            // Conectar ao WebSocket
             socket = new WebSocket('ws://10.34.126.101:8080/ws');
 
             socket.onopen = () => {
-                const payload = { nome: nome, tipo: selectedClass };
+                const payload = {
+                    nome: nome,
+                    tipo: selectedClass
+                };
+
                 socket.send(JSON.stringify(payload));
-                
-                // Preencher dados da arena
+
                 document.getElementById('display-name').innerText = nome;
                 document.getElementById('display-class').innerText = selectedClass;
             };
 
             socket.onmessage = (event) => {
-                // Garante que temos uma string
                 const msg = event.data;
+
                 console.log("Servidor disse:", msg);
 
-                // 1. Comando direto de troca de tela (O mais importante)
-                if (msg === "COMMAND_MOVE_TO_ARENA") {
-                    switchScreen('screen-combat');
-                    addLog("⚔️ O combate começou!");
-                    return; 
-                }
-
-                // 2. Se a mensagem diz que está esperando
-                if (msg.includes("WAITING") || msg.includes("Aguardando")) {
+                // jogador entrou e está esperando
+                if (msg.includes("Aguardando oponente")) {
                     switchScreen('screen-waiting');
                     return;
                 }
 
-                // 3. Lógica de segurança: se a mensagem contém "vs" ou "iniciada", 
-                // e o usuário ainda está na tela de espera, força a entrada.
-                const telaEspera = !document.getElementById('screen-waiting').classList.contains('hidden');
-                const msgInicio = msg.toLowerCase().includes("iniciada") || msg.toLowerCase().includes("vs");
-
-                if (telaEspera && msgInicio) {
+                // batalha começou
+                if (msg.includes("Batalha iniciada")) {
                     switchScreen('screen-combat');
+
+                    addLog("⚔️ A batalha começou!");
+                    addLog(msg, "text-amber-500");
+
+                    return;
                 }
 
-                // 4. Logs de combate (só aparecem se a tela de combate estiver visível)
-                const telaCombateAtiva = !document.getElementById('screen-combat').classList.contains('hidden');
-                if (telaCombateAtiva) {
-                    addLog(msg);
-                }
+                // mensagens normais da luta
+                addLog(msg);
+            };
+
+            socket.onerror = () => {
+                alert("Erro ao conectar no servidor.");
             };
 
             socket.onclose = () => {
@@ -171,20 +174,37 @@
 
         function enviarAcao(acao) {
             if (socket && socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify({ acao: acao }));
-                addLog(`Você preparou: ${acao}`, "text-amber-500");
+
+                socket.send(JSON.stringify({
+                    acao: acao
+                }));
+
+                addLog(`Você usou: ${acao}`, "text-amber-500");
             }
         }
 
         function addLog(text, colorClass = "text-zinc-400") {
             const messagesDiv = document.getElementById('messages');
+
             const p = document.createElement('p');
-            const time = new Date().toLocaleTimeString("pt-BR", { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            
+
+            const time = new Date().toLocaleTimeString("pt-BR", {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
             p.className = `border-l-2 border-zinc-800 pl-3 py-1 ${colorClass}`;
-            p.innerHTML = `<span class="opacity-20 mr-2 text-[10px]">${time}</span> ${text}`;
-            
+
+            p.innerHTML = `
+                <span class="opacity-20 mr-2 text-[10px]">
+                    ${time}
+                </span>
+                ${text}
+            `;
+
             messagesDiv.appendChild(p);
+
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
     </script>
