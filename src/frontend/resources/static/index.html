@@ -291,8 +291,11 @@
 
                 console.log("Servidor disse:", msg);
 
-                // PRIMEIRO JOGADOR
-                if (msg.includes("Aguardando oponente")) {
+                // PRIMEIRO JOGADOR ESPERANDO PARTIDA
+                if (
+                    msg.includes("entrou na arena") &&
+                    msg.includes("Aguardando oponente")
+                ) {
 
                     switchScreen('screen-waiting');
 
