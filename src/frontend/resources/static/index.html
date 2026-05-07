@@ -130,40 +130,36 @@
             };
 
             socket.onmessage = (event) => {
-                const rawData = event.data;
-                console.log("Mensagem recebida:", rawData); // Debug fundamental aqui
+                // Garante que temos uma string
+                const msg = event.data;
+                console.log("Servidor disse:", msg);
 
-                // Tenta tratar a mensagem como texto simples para as verificações
-                const msg = rawData.toString();
-                const currentScreen = document.querySelector('div:not(.hidden)').id;
-
-                // 1. Lógica de Espera
-                if (msg.includes("Aguardando oponente")) {
-                    switchScreen('screen-waiting');
-                    return; // Para aqui, apenas aguarda
-                }
-
-                // 2. Lógica de Transição Forçada (O PULO DO GATO)
-                // Se o jogador está na tela de espera e chegou QUALQUER coisa que não seja "Aguardando", 
-                // e contenha sinais de jogo (vs, iniciada, arena, ou nomes dos players), ele DEVE mudar.
-                const isGameAlert = msg.toLowerCase().includes("iniciada") || 
-                                msg.toLowerCase().includes("vs") || 
-                                msg.toLowerCase().includes("arena") ||
-                                msg === "COMMAND_MOVE_TO_ARENA";
-
-                if (currentScreen === 'screen-waiting' && isGameAlert) {
+                // 1. Comando direto de troca de tela (O mais importante)
+                if (msg === "COMMAND_MOVE_TO_ARENA") {
                     switchScreen('screen-combat');
-                    addLog("⚔️ O combate começou! Prepare-se.");
+                    addLog("⚔️ O combate começou!");
+                    return; 
                 }
 
-                // 3. Adiciona a mensagem ao log se já estiver na arena ou se for o anúncio inicial
-                if (!document.getElementById('screen-combat').classList.contains('hidden')) {
-                    // Formata cores básicas automaticamente
-                    let color = "text-zinc-400";
-                    if (msg.includes("venceu") || msg.includes("ganhou")) color = "text-amber-400 font-bold";
-                    if (msg.includes("Dano") || msg.includes("recebeu")) color = "text-red-400";
-                    
-                    addLog(msg, color);
+                // 2. Se a mensagem diz que está esperando
+                if (msg.includes("WAITING") || msg.includes("Aguardando")) {
+                    switchScreen('screen-waiting');
+                    return;
+                }
+
+                // 3. Lógica de segurança: se a mensagem contém "vs" ou "iniciada", 
+                // e o usuário ainda está na tela de espera, força a entrada.
+                const telaEspera = !document.getElementById('screen-waiting').classList.contains('hidden');
+                const msgInicio = msg.toLowerCase().includes("iniciada") || msg.toLowerCase().includes("vs");
+
+                if (telaEspera && msgInicio) {
+                    switchScreen('screen-combat');
+                }
+
+                // 4. Logs de combate (só aparecem se a tela de combate estiver visível)
+                const telaCombateAtiva = !document.getElementById('screen-combat').classList.contains('hidden');
+                if (telaCombateAtiva) {
+                    addLog(msg);
                 }
             };
 
