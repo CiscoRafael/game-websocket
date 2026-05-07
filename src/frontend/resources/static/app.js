@@ -152,3 +152,77 @@ setConnectionState("Desconectado", "error");
 if (jogadorAtual) {
   addMessage(`Nome salvo encontrado: ${jogadorAtual}. Clique em conectar para entrar novamente.`, "system");
 }
+
+let socket = null;
+let meuNome = "";
+
+const connectButton = document.getElementById('connectButton');
+const panelRegistro = document.getElementById('panel-registro');
+const panelCombate = document.getElementById('panel-combate');
+const messagesDiv = document.getElementById('messages');
+
+connectButton.addEventListener('click', () => {
+    const nome = document.getElementById('nameInput').value;
+    const classe = document.getElementById('classSelect').value;
+
+    if (!nome) return alert("Digite seu nome!");
+
+    meuNome = nome;
+    socket = new WebSocket('ws://10.34.126.101:8080/ws');
+
+    socket.onopen = () => {
+        const payload = { nome: nome, tipo: classe };
+        socket.send(JSON.stringify(payload));
+        document.getElementById('connectionStatus').innerText = "Conectado";
+        document.getElementById('connectionStatus').style.color = "#10b981";
+    };
+
+    socket.onmessage = (event) => {
+        const msg = event.data;
+
+        // ESTADO: Aguardando Oponente
+        if (msg.includes("Aguardando oponente")) {
+            panelRegistro.innerHTML = `
+                <div class="text-center py-10">
+                    <h2 class="text-amber-500 font-black text-2xl animate-pulse">BUSCANDO OPONENTE...</h2>
+                    <p class="text-zinc-400 mt-2">Você entrou na fila como ${meuNome}.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // ESTADO: Início da Batalha (O Redirecionamento Visual)
+        if (msg === "COMMAND_MOVE_TO_ARENA" || msg.includes("Batalha iniciada")) {
+            // Remove o painel de registro
+            panelRegistro.classList.add('hidden'); 
+            
+            // Ativa o painel de combate (remove opacidade e bloqueio)
+            panelCombate.classList.remove('opacity-50', 'pointer-events-none');
+            
+            document.getElementById('playerStatus').innerText = `Guerreiro: ${meuNome}`;
+            adicionarMensagem("🔥 A arena foi selada! O combate começou.");
+            return;
+        }
+
+        // Logs normais de dano/ações
+        adicionarMensagem(msg);
+    };
+});
+
+// Envio de Ações
+document.querySelectorAll('.battle-action').forEach(button => {
+    button.addEventListener('click', () => {
+        const acao = button.getAttribute('data-action');
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ acao: acao }));
+            adicionarMensagem(`Você escolheu: ${acao}. Aguardando oponente...`);
+        }
+    });
+});
+
+function adicionarMensagem(texto) {
+    const p = document.createElement('p');
+    p.textContent = `> ${texto}`;
+    messagesDiv.appendChild(p);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
