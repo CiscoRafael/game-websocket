@@ -7,6 +7,7 @@ public enum Classe {
     MAGO(70.0, 25.0, 5.0, 1.5, 0.8, 150.0, 1.5, 2, new IncendiarSkill()),
     GUERREIRO(120.0, 15.0, 15.0, 20.0, 1.0, 60.0, 2.5, 2.5, new PerfuraDefesaSkill()),
     TANK(200.0, 10.0, 30.0, 0.8, 0.5, 40.0, 3, 1, new ParrySkill()),
+    CLERIGO(100.0, 10.0, 12.0, 1.2, 0.9, 120.0, 2.0, 1.5, new ClerigoSkill()),
     LADINO(80.0, 12.0, 8.0, 2.5, 1.5, 30.0, 4, 2, new EsquivaSkill());
 
     private final double hpBase;

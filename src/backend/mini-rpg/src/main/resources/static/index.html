@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini RPG Arena</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Mini RPG WebSocket</p>
+        <h1>Arena tática em tempo real</h1>
+        <p class="subtitle">Escolha seu nome e sua classe, entre na arena e use as ações para lutar contra outro jogador.</p>
+      </div>
+      <div class="status-card">
+        <span class="status-label">Conexão</span>
+        <strong id="connectionStatus">Desconectado</strong>
+        <small id="playerStatus">Nenhum jogador registrado</small>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="panel panel-form">
+        <header>
+          <h2>Entrar na arena</h2>
+          <p>Informe nome e classe para se conectar ao combate.</p>
+        </header>
+
+        <div class="field">
+          <label for="nameInput">Nome</label>
+          <input id="nameInput" type="text" maxlength="24" placeholder="Ex.: Rafael" />
+        </div>
+
+        <div class="field">
+          <label for="classSelect">Classe</label>
+          <select id="classSelect">
+            <option value="MAGO">Mago</option>
+            <option value="GUERREIRO">Guerreiro</option>
+            <option value="TANK">Tank</option>
+            <option value="CLERIGO">Clérigo</option>
+            <option value="LADINO">Ladino</option>
+          </select>
+        </div>
+
+        <div class="actions-row">
+          <button id="connectButton" class="primary">Conectar e entrar</button>
+          <button id="resetButton" class="secondary" type="button">Trocar jogador</button>
+        </div>
+
+        <p class="hint">Abra esta página em outro navegador ou aba para testar uma segunda pessoa.</p>
+      </article>
+
+      <article class="panel panel-actions">
+        <header>
+          <h2>Ações</h2>
+          <p>Depois de entrar na arena, use uma ação por turno.</p>
+        </header>
+
+        <div class="action-grid">
+          <button class="battle-action" data-action="ATACAR">Atacar</button>
+          <button class="battle-action" data-action="DEFENDER">Defender</button>
+          <button class="battle-action" data-action="ESPECIAL">Habilidade especial</button>
+          <button class="battle-action" data-action="POTION">Usar poção</button>
+        </div>
+
+        <div class="message-box">
+          <div class="message-box-head">
+            <h3>Mensagens</h3>
+            <button id="clearMessages" type="button">Limpar</button>
+          </div>
+          <div id="messages" class="messages" aria-live="polite"></div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
