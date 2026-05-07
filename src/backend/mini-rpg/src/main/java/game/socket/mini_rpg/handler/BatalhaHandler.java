@@ -57,6 +57,16 @@ public class BatalhaHandler extends TextWebSocketHandler {
                     }
                     if (resultadoDTO.vencedor() != null) {
                         broadcast("🏆 FIM DE JOGO! " + resultadoDTO.vencedor());
+
+                        // comando técnico pro front
+                        broadcast("COMMAND_GAME_OVER");
+
+                        // fecha todas conexões
+                        for (WebSocketSession s : sessoes) {
+                            if (s.isOpen()) {
+                                s.close();
+                            }
+                        }
                     }
                 } else {
                     // Se o turno não acabou, apenas confirma que recebeu a ação

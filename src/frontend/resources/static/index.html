@@ -317,6 +317,22 @@
                     return;
                 }
 
+                // FIM DE JOGO
+                if (msg === "COMMAND_GAME_OVER") {
+
+                    addLog("🏁 Partida encerrada!");
+
+                    setTimeout(() => {
+
+                        alert("A partida terminou!");
+
+                        location.reload();
+
+                    }, 1500);
+
+                    return;
+                }
+
                 // LOG DA BATALHA
                 addLog(msg);
             };
