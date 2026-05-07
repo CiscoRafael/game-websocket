@@ -130,30 +130,40 @@
             };
 
             socket.onmessage = (event) => {
-                const msg = event.data;
+                const rawData = event.data;
+                console.log("Mensagem recebida:", rawData); // Debug fundamental aqui
 
-                // Se a mensagem for de espera, garante que está na tela de waiting
+                // Tenta tratar a mensagem como texto simples para as verificações
+                const msg = rawData.toString();
+                const currentScreen = document.querySelector('div:not(.hidden)').id;
+
+                // 1. Lógica de Espera
                 if (msg.includes("Aguardando oponente")) {
                     switchScreen('screen-waiting');
-                } 
-                // Se a mensagem contiver qualquer indício de que o jogo começou
-                // Adicionei msg.includes("Arena") e msg.includes("vs") para cobrir mais casos
-                else if (
-                    msg === "COMMAND_MOVE_TO_ARENA" || 
-                    msg.toLowerCase().includes("iniciada") || 
-                    msg.toLowerCase().includes("arena") || 
-                    msg.toLowerCase().includes("vs")
-                ) {
-                    // Verifica se ainda está na tela de setup ou waiting antes de trocar
-                    if (document.getElementById('screen-combat').classList.contains('hidden')) {
-                        switchScreen('screen-combat');
-                        addLog("⚔️ O combate começou! Prepare-se.");
-                    }
-                    addLog(msg); // Loga a mensagem original (ex: "Batalha iniciada entre X e Y")
-                } 
-                else {
-                    // Se já estiver na tela de combate, apenas adiciona o log
-                    addLog(msg);
+                    return; // Para aqui, apenas aguarda
+                }
+
+                // 2. Lógica de Transição Forçada (O PULO DO GATO)
+                // Se o jogador está na tela de espera e chegou QUALQUER coisa que não seja "Aguardando", 
+                // e contenha sinais de jogo (vs, iniciada, arena, ou nomes dos players), ele DEVE mudar.
+                const isGameAlert = msg.toLowerCase().includes("iniciada") || 
+                                msg.toLowerCase().includes("vs") || 
+                                msg.toLowerCase().includes("arena") ||
+                                msg === "COMMAND_MOVE_TO_ARENA";
+
+                if (currentScreen === 'screen-waiting' && isGameAlert) {
+                    switchScreen('screen-combat');
+                    addLog("⚔️ O combate começou! Prepare-se.");
+                }
+
+                // 3. Adiciona a mensagem ao log se já estiver na arena ou se for o anúncio inicial
+                if (!document.getElementById('screen-combat').classList.contains('hidden')) {
+                    // Formata cores básicas automaticamente
+                    let color = "text-zinc-400";
+                    if (msg.includes("venceu") || msg.includes("ganhou")) color = "text-amber-400 font-bold";
+                    if (msg.includes("Dano") || msg.includes("recebeu")) color = "text-red-400";
+                    
+                    addLog(msg, color);
                 }
             };
 
