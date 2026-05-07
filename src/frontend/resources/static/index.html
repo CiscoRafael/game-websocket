@@ -199,6 +199,11 @@
                     Poção
                 </button>
 
+                <button onclick="desistirPartida()"
+                    class="w-full py-3 text-zinc-600 hover:text-zinc-400 text-[10px] font-bold uppercase tracking-widest border border-zinc-800 rounded-xl transition-all">
+                    Desistir / Sair
+                </button>
+
             </div>
 
         </div>
@@ -324,6 +329,15 @@
                 alert("Conexão perdida.");
                 location.reload();
             };
+        }
+
+        function desistirPartida() {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+
+                socket.close();
+            }
+
+            location.reload();
         }
 
         function enviarAcao(acao) {
