@@ -1,4 +1,4 @@
-package game.socket.mini_rpg.controller;
+package game.socket.mini_rpg.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

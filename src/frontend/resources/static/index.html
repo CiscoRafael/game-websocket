@@ -132,14 +132,27 @@
             socket.onmessage = (event) => {
                 const msg = event.data;
 
+                // Se a mensagem for de espera, garante que está na tela de waiting
                 if (msg.includes("Aguardando oponente")) {
                     switchScreen('screen-waiting');
                 } 
-                else if (msg === "COMMAND_MOVE_TO_ARENA" || msg.includes("iniciada")) {
-                    switchScreen('screen-combat');
-                    addLog("⚔️ O combate começou! Prepare-se.");
+                // Se a mensagem contiver qualquer indício de que o jogo começou
+                // Adicionei msg.includes("Arena") e msg.includes("vs") para cobrir mais casos
+                else if (
+                    msg === "COMMAND_MOVE_TO_ARENA" || 
+                    msg.toLowerCase().includes("iniciada") || 
+                    msg.toLowerCase().includes("arena") || 
+                    msg.toLowerCase().includes("vs")
+                ) {
+                    // Verifica se ainda está na tela de setup ou waiting antes de trocar
+                    if (document.getElementById('screen-combat').classList.contains('hidden')) {
+                        switchScreen('screen-combat');
+                        addLog("⚔️ O combate começou! Prepare-se.");
+                    }
+                    addLog(msg); // Loga a mensagem original (ex: "Batalha iniciada entre X e Y")
                 } 
                 else {
+                    // Se já estiver na tela de combate, apenas adiciona o log
                     addLog(msg);
                 }
             };
