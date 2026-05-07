@@ -18,7 +18,6 @@ import java.util.Optional;
 
 @Service
 public class BattleService {
-
     private final Map<String, Personagem> jogadoresAtivos = new ConcurrentHashMap<>();
     private final Map<String, Intencao> acoesPendentes = new ConcurrentHashMap<>();
     private boolean alternarTurnoPrioridade = true; 
@@ -43,13 +42,18 @@ public class BattleService {
         }
 
         Personagem p = new Personagem(nome, classe);
+
         jogadoresAtivos.put(nome, p);
 
+        // segundo jogador entrou
         if (jogadoresAtivos.size() == 2) {
-            return "🔥 Batalha iniciada entre " + jogadoresAtivos.keySet();
+
+            return "START_GAME:🔥 Batalha iniciada entre "
+                    + jogadoresAtivos.keySet();
         }
 
-        return nome + " entrou na arena. Aguardando oponente...";
+        // primeiro jogador esperando
+        return "WAITING:" + nome + " entrou na arena. Aguardando oponente...";
     }
 
     private TurnoResultadoDTO resolverConflito() {

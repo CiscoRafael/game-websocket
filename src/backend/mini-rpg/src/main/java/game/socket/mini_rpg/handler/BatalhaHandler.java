@@ -13,6 +13,8 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
@@ -20,7 +22,6 @@ public class BatalhaHandler extends TextWebSocketHandler {
 
     @Autowired
     private BattleService battleService;
-
     private final ObjectMapper mapper = new ObjectMapper();
     // Lista de sessões aberta para o resto do sistema
     public static final CopyOnWriteArrayList<WebSocketSession> sessoes = new CopyOnWriteArrayList<>();

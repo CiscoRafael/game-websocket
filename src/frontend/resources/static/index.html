@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini RPG - Arena WebSocket</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         .class-card.selected {
             border-color: #f59e0b;
@@ -12,92 +15,225 @@
             transform: translateY(-4px);
             background-color: #fef3c7;
         }
-        .hidden { display: none !important; }
-        .messages::-webkit-scrollbar { width: 4px; }
-        .messages::-webkit-scrollbar-thumb { background: #454545; border-radius: 10px; }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background: #454545;
+            border-radius: 10px;
+        }
     </style>
 </head>
+
 <body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center p-4">
 
-    <div id="screen-setup" class="max-w-4xl w-full bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-2xl">
+    <!-- SETUP -->
+    <div id="screen-setup"
+        class="max-w-4xl w-full bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-2xl">
+
         <div class="text-center mb-10">
-            <p class="text-amber-500 text-xs font-black uppercase tracking-[0.3em] mb-2">Multiplayer Arena</p>
-            <h1 class="text-4xl font-black tracking-tighter uppercase italic">Escolha seu Destino</h1>
+            <p class="text-amber-500 text-xs font-black uppercase tracking-[0.3em] mb-2">
+                Multiplayer Arena
+            </p>
+
+            <h1 class="text-4xl font-black tracking-tighter uppercase italic">
+                Escolha seu Destino
+            </h1>
         </div>
 
         <div class="mb-10 max-w-md mx-auto">
-            <label class="block text-[10px] uppercase tracking-widest font-bold text-zinc-500 mb-2 text-center">Identidade do Viajante</label>
-            <input type="text" id="player-name" placeholder="Ex: Artorias" 
+            <label
+                class="block text-[10px] uppercase tracking-widest font-bold text-zinc-500 mb-2 text-center">
+                Identidade do Viajante
+            </label>
+
+            <input type="text"
+                id="player-name"
+                placeholder="Ex: Artorias"
                 class="w-full bg-zinc-950 border border-zinc-800 p-4 rounded-xl text-center text-xl focus:outline-none focus:border-amber-500 transition-all">
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
-            <div onclick="selectClass('GUERREIRO')" id="card-GUERREIRO" class="class-card bg-zinc-100 text-black p-4 rounded-xl cursor-pointer transition-all border-4 border-transparent hover:scale-105">
-                <div class="aspect-square flex items-center justify-center mb-2 text-3xl">⚔️</div>
-                <h3 class="text-[10px] font-black text-center">GUERREIRO</h3>
+
+            <div onclick="selectClass('GUERREIRO')"
+                id="card-GUERREIRO"
+                class="class-card bg-zinc-100 text-black p-4 rounded-xl cursor-pointer transition-all border-4 border-transparent hover:scale-105">
+
+                <div class="aspect-square flex items-center justify-center mb-2 text-3xl">
+                    ⚔️
+                </div>
+
+                <h3 class="text-[10px] font-black text-center">
+                    GUERREIRO
+                </h3>
             </div>
-            <div onclick="selectClass('MAGO')" id="card-MAGO" class="class-card bg-zinc-100 text-black p-4 rounded-xl cursor-pointer transition-all border-4 border-transparent hover:scale-105">
-                <div class="aspect-square flex items-center justify-center mb-2 text-3xl">🔮</div>
-                <h3 class="text-[10px] font-black text-center">MAGO</h3>
+
+            <div onclick="selectClass('MAGO')"
+                id="card-MAGO"
+                class="class-card bg-zinc-100 text-black p-4 rounded-xl cursor-pointer transition-all border-4 border-transparent hover:scale-105">
+
+                <div class="aspect-square flex items-center justify-center mb-2 text-3xl">
+                    🔮
+                </div>
+
+                <h3 class="text-[10px] font-black text-center">
+                    MAGO
+                </h3>
             </div>
-            <div onclick="selectClass('TANK')" id="card-TANK" class="class-card bg-zinc-100 text-black p-4 rounded-xl cursor-pointer transition-all border-4 border-transparent hover:scale-105">
-                <div class="aspect-square flex items-center justify-center mb-2 text-3xl">🛡️</div>
-                <h3 class="text-[10px] font-black text-center">TANK</h3>
+
+            <div onclick="selectClass('TANK')"
+                id="card-TANK"
+                class="class-card bg-zinc-100 text-black p-4 rounded-xl cursor-pointer transition-all border-4 border-transparent hover:scale-105">
+
+                <div class="aspect-square flex items-center justify-center mb-2 text-3xl">
+                    🛡️
+                </div>
+
+                <h3 class="text-[10px] font-black text-center">
+                    TANK
+                </h3>
             </div>
-            <div onclick="selectClass('LADINO')" id="card-LADINO" class="class-card bg-zinc-100 text-black p-4 rounded-xl cursor-pointer transition-all border-4 border-transparent hover:scale-105">
-                <div class="aspect-square flex items-center justify-center mb-2 text-3xl">🗡️</div>
-                <h3 class="text-[10px] font-black text-center">LADINO</h3>
+
+            <div onclick="selectClass('LADINO')"
+                id="card-LADINO"
+                class="class-card bg-zinc-100 text-black p-4 rounded-xl cursor-pointer transition-all border-4 border-transparent hover:scale-105">
+
+                <div class="aspect-square flex items-center justify-center mb-2 text-3xl">
+                    🗡️
+                </div>
+
+                <h3 class="text-[10px] font-black text-center">
+                    LADINO
+                </h3>
             </div>
-            <div onclick="selectClass('CLERIGO')" id="card-CLERIGO" class="class-card bg-zinc-100 text-black p-4 rounded-xl cursor-pointer transition-all border-4 border-transparent hover:scale-105">
-                <div class="aspect-square flex items-center justify-center mb-2 text-3xl">✨</div>
-                <h3 class="text-[10px] font-black text-center">CLÉRIGO</h3>
+
+            <div onclick="selectClass('CLERIGO')"
+                id="card-CLERIGO"
+                class="class-card bg-zinc-100 text-black p-4 rounded-xl cursor-pointer transition-all border-4 border-transparent hover:scale-105">
+
+                <div class="aspect-square flex items-center justify-center mb-2 text-3xl">
+                    ✨
+                </div>
+
+                <h3 class="text-[10px] font-black text-center">
+                    CLÉRIGO
+                </h3>
             </div>
+
         </div>
 
-        <button onclick="entrarNaArena()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-black py-5 rounded-xl shadow-[0_6px_0_0_rgba(180,83,9,1)] active:shadow-none active:translate-y-1 transition-all uppercase tracking-widest">
+        <button onclick="entrarNaArena()"
+            class="w-full bg-amber-600 hover:bg-amber-500 text-white font-black py-5 rounded-xl shadow-[0_6px_0_0_rgba(180,83,9,1)] active:shadow-none active:translate-y-1 transition-all uppercase tracking-widest">
+
             Desafiar Oponente
+
         </button>
     </div>
 
+    <!-- WAITING -->
     <div id="screen-waiting" class="hidden text-center">
-        <div class="inline-block w-20 h-20 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-8"></div>
-        <h2 class="text-4xl font-black text-amber-500 animate-pulse uppercase italic tracking-tighter">Buscando Rival...</h2>
-        <p class="text-zinc-500 mt-4 text-lg">Seu herói entrou na arena. Aguarde o sinal de batalha.</p>
-    </div>
 
-    <div id="screen-combat" class="hidden max-w-6xl w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-1 space-y-6">
-            <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-xl">
-                <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">Seu Herói</p>
-                <h2 id="display-name" class="text-3xl font-black text-amber-500 truncate">---</h2>
-                <p id="display-class" class="text-zinc-400 font-mono text-sm">---</p>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="enviarAcao('ATACAR')" class="bg-red-600 hover:bg-red-500 p-4 rounded-2xl font-black uppercase text-xs transition-all shadow-md">Atacar</button>
-                <button onclick="enviarAcao('DEFENDER')" class="bg-blue-600 hover:bg-blue-500 p-4 rounded-2xl font-black uppercase text-xs transition-all shadow-md">Defender</button>
-                <button onclick="enviarAcao('ESPECIAL')" class="bg-purple-600 hover:bg-purple-500 p-4 rounded-2xl font-black uppercase text-xs transition-all shadow-md">Especial</button>
-                <button onclick="enviarAcao('POTION')" class="bg-emerald-600 hover:bg-emerald-500 p-4 rounded-2xl font-black uppercase text-xs transition-all shadow-md">Poção</button>
-            </div>
-            
-            <button onclick="location.reload()" class="w-full py-3 text-zinc-600 hover:text-zinc-400 text-[10px] font-bold uppercase tracking-widest border border-zinc-800 rounded-xl transition-all">Desistir / Sair</button>
+        <div
+            class="inline-block w-20 h-20 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-8">
         </div>
 
-        <div class="lg:col-span-2 bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-xl flex flex-col h-[500px]">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xs font-black uppercase text-zinc-500">Relatório de Combate</h3>
-                <span class="px-3 py-1 bg-green-900/30 text-green-500 text-[10px] font-bold rounded-full animate-pulse">LIVE</span>
+        <h2 class="text-4xl font-black text-amber-500 animate-pulse uppercase italic tracking-tighter">
+            Buscando Rival...
+        </h2>
+
+        <p class="text-zinc-500 mt-4 text-lg">
+            Seu herói entrou na arena. Aguarde o sinal de batalha.
+        </p>
+
+    </div>
+
+    <!-- COMBAT -->
+    <div id="screen-combat"
+        class="hidden max-w-6xl w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <div class="lg:col-span-1 space-y-6">
+
+            <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-xl">
+
+                <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">
+                    Seu Herói
+                </p>
+
+                <h2 id="display-name"
+                    class="text-3xl font-black text-amber-500 truncate">
+                    ---
+                </h2>
+
+                <p id="display-class"
+                    class="text-zinc-400 font-mono text-sm">
+                    ---
+                </p>
+
             </div>
-            <div id="messages" class="messages flex-1 overflow-y-auto font-mono text-sm space-y-2 pr-2 text-zinc-300">
-                </div>
+
+            <div class="grid grid-cols-2 gap-3">
+
+                <button onclick="enviarAcao('ATACAR')"
+                    class="bg-red-600 hover:bg-red-500 p-4 rounded-2xl font-black uppercase text-xs transition-all shadow-md">
+                    Atacar
+                </button>
+
+                <button onclick="enviarAcao('DEFENDER')"
+                    class="bg-blue-600 hover:bg-blue-500 p-4 rounded-2xl font-black uppercase text-xs transition-all shadow-md">
+                    Defender
+                </button>
+
+                <button onclick="enviarAcao('ESPECIAL')"
+                    class="bg-purple-600 hover:bg-purple-500 p-4 rounded-2xl font-black uppercase text-xs transition-all shadow-md">
+                    Especial
+                </button>
+
+                <button onclick="enviarAcao('POTION')"
+                    class="bg-emerald-600 hover:bg-emerald-500 p-4 rounded-2xl font-black uppercase text-xs transition-all shadow-md">
+                    Poção
+                </button>
+
+            </div>
+
+        </div>
+
+        <div
+            class="lg:col-span-2 bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-xl flex flex-col h-[500px]">
+
+            <div class="flex justify-between items-center mb-4">
+
+                <h3 class="text-xs font-black uppercase text-zinc-500">
+                    Relatório de Combate
+                </h3>
+
+                <span
+                    class="px-3 py-1 bg-green-900/30 text-green-500 text-[10px] font-bold rounded-full animate-pulse">
+                    LIVE
+                </span>
+
+            </div>
+
+            <div id="messages"
+                class="messages flex-1 overflow-y-auto font-mono text-sm space-y-2 pr-2 text-zinc-300">
+            </div>
+
         </div>
     </div>
 
     <script>
+
         let selectedClass = null;
         let socket = null;
+        let nomeJogador = "";
 
         function selectClass(className) {
+
             selectedClass = className;
 
             document.querySelectorAll('.class-card')
@@ -108,14 +244,22 @@
         }
 
         function switchScreen(screenId) {
-            document.getElementById('screen-setup').classList.add('hidden');
-            document.getElementById('screen-waiting').classList.add('hidden');
-            document.getElementById('screen-combat').classList.add('hidden');
 
-            document.getElementById(screenId).classList.remove('hidden');
+            document.getElementById('screen-setup')
+                .classList.add('hidden');
+
+            document.getElementById('screen-waiting')
+                .classList.add('hidden');
+
+            document.getElementById('screen-combat')
+                .classList.add('hidden');
+
+            document.getElementById(screenId)
+                .classList.remove('hidden');
         }
 
         function entrarNaArena() {
+
             const nome = document.getElementById('player-name').value;
 
             if (!nome || !selectedClass) {
@@ -123,42 +267,49 @@
                 return;
             }
 
+            nomeJogador = nome;
+
             socket = new WebSocket('ws://10.34.126.101:8080/ws');
 
             socket.onopen = () => {
-                const payload = {
-                    nome: nome,
+
+                socket.send(JSON.stringify({
+                    nome: nomeJogador,
                     tipo: selectedClass
-                };
+                }));
 
-                socket.send(JSON.stringify(payload));
+                document.getElementById('display-name')
+                    .innerText = nomeJogador;
 
-                document.getElementById('display-name').innerText = nome;
-                document.getElementById('display-class').innerText = selectedClass;
+                document.getElementById('display-class')
+                    .innerText = selectedClass;
             };
 
             socket.onmessage = (event) => {
+
                 const msg = event.data;
 
                 console.log("Servidor disse:", msg);
 
-                // jogador entrou e está esperando
+                // PRIMEIRO JOGADOR
                 if (msg.includes("Aguardando oponente")) {
+
                     switchScreen('screen-waiting');
+
                     return;
                 }
 
-                // batalha começou
-                if (msg.includes("Batalha iniciada")) {
+                // TODOS OS JOGADORES ENTRAM NA ARENA
+                if (msg === "COMMAND_MOVE_TO_ARENA") {
+
                     switchScreen('screen-combat');
 
                     addLog("⚔️ A batalha começou!");
-                    addLog(msg, "text-amber-500");
 
                     return;
                 }
 
-                // mensagens normais da luta
+                // LOG DA BATALHA
                 addLog(msg);
             };
 
@@ -173,9 +324,11 @@
         }
 
         function enviarAcao(acao) {
+
             if (socket && socket.readyState === WebSocket.OPEN) {
 
                 socket.send(JSON.stringify({
+                    jogador: nomeJogador,
                     acao: acao
                 }));
 
@@ -184,6 +337,7 @@
         }
 
         function addLog(text, colorClass = "text-zinc-400") {
+
             const messagesDiv = document.getElementById('messages');
 
             const p = document.createElement('p');
@@ -207,6 +361,8 @@
 
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
+
     </script>
+
 </body>
 </html>
