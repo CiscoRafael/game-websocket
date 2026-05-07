@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini RPG - Seleção de Heróis</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        .class-card.selected {
+            border-color: #f59e0b;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+            transform: translateY(-4px);
+        }
+
+        .class-image {
+            object-fit: contain;
+            width: 80%;
+            height: 80%;
+        }
+    </style>
+</head>
+
+<body class="bg-zinc-900 text-white min-h-screen flex items-center justify-center p-6">
+
+    <div id="setup-container"
+        class="max-w-6xl w-full bg-zinc-800 p-8 rounded-2xl shadow-2xl border border-zinc-700">
+
+        <h1 class="text-4xl font-black text-center mb-10 text-amber-500 uppercase tracking-tighter">
+            Escolha seu Destino
+        </h1>
+
+        <div class="mb-10 max-w-md mx-auto">
+            <label class="block text-xs uppercase tracking-widest font-bold text-zinc-500 mb-2 text-center">
+                Nome do Viajante
+            </label>
+
+            <input type="text"
+                id="player-name"
+                placeholder="Ex: Artorias"
+                class="w-full bg-zinc-900 border border-zinc-700 p-4 rounded-xl text-center text-xl focus:outline-none focus:border-amber-500 transition-all">
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
+
+            <!-- GUERREIRO -->
+            <div onclick="selectClass('GUERREIRO')"
+                class="class-card bg-white text-black border-2 border-zinc-300 p-4 rounded-xl cursor-pointer transition-all hover:border-zinc-500"
+                id="card-GUERREIRO">
+
+                <div class="w-full aspect-square bg-white rounded-lg mb-3 overflow-hidden flex items-center justify-center">
+                    <img src="../images/guerreiro.png"
+                        alt="Guerreiro"
+                        class="class-image">
+                </div>
+
+                <h3 class="text-sm font-bold text-center">
+                    GUERREIRO
+                </h3>
+            </div>
+
+            <!-- MAGO -->
+            <div onclick="selectClass('MAGO')"
+                class="class-card bg-white text-black border-2 border-zinc-300 p-4 rounded-xl cursor-pointer transition-all hover:border-zinc-500"
+                id="card-MAGO">
+
+                <div class="w-full aspect-square bg-white rounded-lg mb-3 overflow-hidden flex items-center justify-center">
+                    <img src="../images/mago.png"
+                        alt="Mago"
+                        class="class-image">
+                </div>
+
+                <h3 class="text-sm font-bold text-center">
+                    MAGO
+                </h3>
+            </div>
+
+            <!-- TANK -->
+            <div onclick="selectClass('TANK')"
+                class="class-card bg-white text-black border-2 border-zinc-300 p-4 rounded-xl cursor-pointer transition-all hover:border-zinc-500"
+                id="card-TANK">
+
+                <div class="w-full aspect-square bg-white rounded-lg mb-3 overflow-hidden flex items-center justify-center">
+                    <img src="../images/tank.jpg"
+                        alt="Tank"
+                        class="class-image">
+                </div>
+
+                <h3 class="text-sm font-bold text-center">
+                    TANK
+                </h3>
+            </div>
+
+            <!-- LADINO -->
+            <div onclick="selectClass('LADINO')"
+                class="class-card bg-white text-black border-2 border-zinc-300 p-4 rounded-xl cursor-pointer transition-all hover:border-zinc-500"
+                id="card-LADINO">
+
+                <div class="w-full aspect-square bg-white rounded-lg mb-3 overflow-hidden flex items-center justify-center">
+                    <img src="../images/ladino.png"
+                        alt="Ladino"
+                        class="class-image">
+                </div>
+
+                <h3 class="text-sm font-bold text-center">
+                    LADINO
+                </h3>
+            </div>
+
+            <!-- CLERIGO -->
+            <div onclick="selectClass('CLERIGO')"
+                class="class-card bg-white text-black border-2 border-zinc-300 p-4 rounded-xl cursor-pointer transition-all hover:border-zinc-500"
+                id="card-CLERIGO">
+
+                <div class="w-full aspect-square bg-white rounded-lg mb-3 overflow-hidden flex items-center justify-center">
+                    <img src="../images/clerigo.png"
+                        alt="Clérigo"
+                        class="class-image">
+                </div>
+
+                <h3 class="text-sm font-bold text-center">
+                    CLÉRIGO
+                </h3>
+            </div>
+
+        </div>
+
+        <button onclick="entrarNaArena()"
+            class="w-full bg-amber-600 hover:bg-amber-500 text-white font-black py-5 rounded-xl shadow-[0_10px_0_0_rgba(180,83,9,1)] active:shadow-none active:translate-y-1 transition-all uppercase tracking-widest">
+
+            Desafiar Oponente
+
+        </button>
+    </div>
+
+    <script>
+        let selectedClass = null;
+
+        function selectClass(className) {
+            selectedClass = className;
+
+            document.querySelectorAll('.class-card')
+                .forEach(card => card.classList.remove('selected'));
+
+            document.getElementById(`card-${className}`)
+                .classList.add('selected');
+        }
+
+        function entrarNaArena() {
+            const nome = document.getElementById('player-name').value;
+
+            if (!nome || !selectedClass) {
+                alert("Identifique-se e escolha sua classe, herói!");
+                return;
+            }
+
+            const socket = new WebSocket('ws://10.34.126.101:8080/ws');
+
+            socket.onopen = () => {
+                const payload = {
+                    nome: nome,
+                    tipo: selectedClass
+                };
+
+                socket.send(JSON.stringify(payload));
+                console.log("Payload enviado:", payload);
+            };
+
+            socket.onmessage = (event) => {
+                const msg = event.data;
+
+                // Se o comando for para mover para a arena
+                if (msg === "COMMAND_MOVE_TO_ARENA") {
+                    // Esconde a tela de seleção e mostra a arena
+                    document.getElementById('setup-container').classList.add('hidden');
+                    document.getElementById('arena-container').classList.remove('hidden');
+                    
+                    // Opcional: Atualiza o status na tela
+                    document.getElementById('connectionStatus').innerText = "Em Combate";
+                    return;
+                }
+
+                // Se for mensagem de log, adiciona na caixa de mensagens da arena
+                const messagesDiv = document.getElementById('messages');
+                if (messagesDiv) {
+                    const p = document.createElement('p');
+                    p.textContent = msg;
+                    messagesDiv.appendChild(p);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }
+            };
+
+            socket.onerror = () => {
+                alert("Erro ao conectar ao servidor de batalha.");
+            };
+        }
+    </script>
+
+</body>
+</html>

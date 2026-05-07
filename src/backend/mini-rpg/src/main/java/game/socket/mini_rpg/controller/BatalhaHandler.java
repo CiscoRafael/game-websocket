@@ -63,10 +63,20 @@ public class BatalhaHandler extends TextWebSocketHandler {
                 }
 
             } else {
-                // Lógica de entrada de jogador (continua igual, mas chamando entrarNaArena)
                 JogadorRequestDTO entrada = mapper.readValue(payload, JogadorRequestDTO.class);
                 String resultado = battleService.entrarNaArena(entrada.nome(), entrada.tipo());
-                broadcast(resultado);
+
+                if (resultado.startsWith("START_GAME:")) {
+                    // 1. Envia a mensagem amigável para o log
+                    broadcast(resultado.replace("START_GAME:", ""));
+                    
+                    // 2. Envia o comando técnico que o JS vai ler para trocar de tela
+                    broadcast("COMMAND_MOVE_TO_ARENA"); 
+                } else if (resultado.startsWith("WAITING:")) {
+                    broadcast(resultado.replace("WAITING:", ""));
+                } else {
+                    session.sendMessage(new TextMessage(resultado));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace(); // Ajuda a ver o erro real no console do VS Code
