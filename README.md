@@ -131,7 +131,7 @@ A organização do repositório separa claramente as responsabilidades do servid
 
 | 👤 Nome | :octocat: GitHub |
 | :--- | :--- |
-| **Felipe Augusto Mendes Pereira** | [Acesse o Perfil](https://github.com/Felp64) |
+| **Felipe Augusto Mendes Pereira** | [Felp64](https://github.com/Felp64) |
 | **Francisco Rafael Pereira Rodrigues** | [CiscoRafael](https://github.com/CiscoRafael) |
 
 
